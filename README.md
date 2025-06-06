@@ -1,36 +1,41 @@
-Описание предметной области
-Производственная
-компания
-«Новые
-технологии»
-выпускает
-отделочное материалы для стен и пола. Компания занимается производством
-и реализует свою продукцию через партнеров, которые доставляют
-продукцию компании до конечных потребителей.
-С целью оптимизации деятельности компании разрабатывается система,
-в которой заказчик выделил несколько подсистем:
-− продукция;
-− склад и материалы;
-− производство;
-− сотрудники;
-− партнеры.
-В данной области определены следующие основные составляющие:
-1. Партнеры: тип, наименование компании, юридический адрес, ИНН,
-ФИО директора, контактные данные (телефон, email), логотип, рейтинг, места
-продаж, история реализации продукции для последующего расчета скидок.
-Партнеры покупают продукцию со скидками, которые зависят от общего
-объема их продаж. Скидки мотивируют партнеров к большему объему продаж.
-Партнеры реализуют товары в розничных и оптовых магазинах, интернет-
-магазинах, другим компаниям по продаже товаров и оказанию услуг.
-Взаиморасчеты
-производственной
-компании
-с
-партнерами
-осуществляются в рублях.
-2. Менеджеры: поиск и регистрация партнеров, решение об изменении
-рейтинга партнера, ведение истории изменений рейтинга, прием заявок от
-партнеров, формирование для них предложения на основании статистики
-истории продаж, полученной от аналитиков компании.
+async function getall() {
+  const client = global.dbclient
+  const [producttype, product, workshops, productworkshops, materialtype] = await Promise.all([
+    client.query('SELECT * FROM product_type'),
+    client.query('SELECT * FROM product'),
+    client.query('SELECT * FROM workshops'),
+    client.query('SELECT * FROM product_workshops'),
+    client.query('SELECT * FROM material_type')
+  ])
+  return {
+    producttype: producttype.rows,
+    product: product.rows,
+    workshops: workshops.rows,
+    productworkshops: productworkshops.rows,
+    materialtype: materialtype.rows
+  }
+}
+
+ipcMain.handle('getalldb', getall),
+
+
+
+getalldb: (data) => ipcRenderer.invoke('getalldb', data)
+
+
+const [data, setData] = useState({
+    producttype:[],
+    product:[],
+    workshops:[],
+    productworkshops:[],
+    materialtype:[]
+  })
+  
+  useEffect(() =>{
+    window.api.getalldb().then(result => {
+      setData(result)
+      console.log(result)
+    })
+  },[])
 
 
