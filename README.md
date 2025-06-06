@@ -35,6 +35,7 @@ const [data, setData] = useState({
     window.api.getalldb().then(result => {
       setData(result)
       console.log(result)
+      JSON.stringify(result, null, 2)
     })
   },[])
 
